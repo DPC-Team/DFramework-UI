@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { CContainer, CSpinner } from '@coreui/react'
+import PrivateRoute from 'src/routes/PrivateRoute'
 
 // routes config
 import routes from '../routes'
@@ -18,7 +19,7 @@ const AppContent = () => {
                   path={route.path}
                   exact={route.exact}
                   name={route.name}
-                  element={<route.element />}
+                  element={<PrivateRoute component={route.element} />}
                 />
               )
             )

@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom'
 import jwt_decode from 'jwt-decode'
 import PropTypes from 'prop-types'
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const PrivateRoute = ({ component: Component }) => {
   const token = localStorage.getItem('token')
   if (!token) {
     return <Navigate to="/login" />
@@ -21,12 +21,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     localStorage.removeItem('token')
     return <Navigate to="/login" />
   }
-
-  return <Component {...rest} />
+  return <Component />
 }
 
 PrivateRoute.propTypes = {
-  component: PropTypes.node,
+  component: PropTypes.any,
 }
 
 export default PrivateRoute
