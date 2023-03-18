@@ -22,6 +22,7 @@ const Login = () => {
   const localization = useSelector((state) => state.localization.localization)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [validated, setValidated] = useState(false)
 
   const navigate = useNavigate()
   const handlerUsernameChange = (e) => {
@@ -32,13 +33,19 @@ const Login = () => {
     setPassword(e.target.value)
   }
 
-  const onLogin = async () => {
-    var user = await authenticate(username, password)
-    if (user && user.token) {
-      setUsername('')
-      setPassword('')
-      navigate('/')
+  const onLogin = async (e) => {
+    const form = e.currentTarget
+    if (form.checkValidity() === false) {
+      e.preventDefault()
+      e.stopPropagation()
+      var user = await authenticate(username, password)
+      if (user && user.token) {
+        setUsername('')
+        setPassword('')
+        navigate('/')
+      }
     }
+    setValidated(true)
   }
 
   const OnEnterEvent = async (e) => {
@@ -53,7 +60,12 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <CForm
+                    className="row needs-validation"
+                    onSubmit={onLogin}
+                    noValidate
+                    validated={validated}
+                  >
                     <h1>{localization.get('login.title')}</h1>
                     <p className="text-medium-emphasis">{localization.get('login.text')}</p>
                     <CInputGroup className="mb-3">
@@ -63,6 +75,8 @@ const Login = () => {
                       <CFormInput
                         placeholder={localization.get('login.input.username')}
                         autoComplete="username"
+                        feedbackInvalid={localization.get('login.input.username.feedback')}
+                        required
                         onChange={handlerUsernameChange}
                         onKeyPress={OnEnterEvent}
                         value={username}
@@ -79,6 +93,8 @@ const Login = () => {
                         onChange={handlerPasswordChange}
                         onKeyPress={OnEnterEvent}
                         value={password}
+                        feedbackInvalid={localization.get('login.input.username.feedback')}
+                        required
                       />
                     </CInputGroup>
                     <CRow>
@@ -88,7 +104,7 @@ const Login = () => {
                         </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
+                        <CButton color="link" className="px-0" type="submit">
                           {localization.get('login.forgotpassword')}
                         </CButton>
                       </CCol>

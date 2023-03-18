@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { CloseAddUser } from 'src/reducers/UserReducer'
 import { AddUser as addUser } from 'src/services/Security/UserService'
 import { useSelector, useDispatch } from 'react-redux'
@@ -12,17 +12,23 @@ import {
   CModalFooter,
   CButton,
   CCol,
-  CFormLabel,
   CFormInput,
+  CForm,
 } from '@coreui/react'
 
 const AddUser = (props) => {
   const { onSave } = props
-  const localization = useSelector((state) => state.localization.localization)
   const user = useSelector((state) => state.users.addingUser)
   const [currentUser, setUser] = useState(user)
+  const [validated, setValidated] = useState(false)
+  const localization = useSelector((state) => state.localization.localization)
   const visibleAdd = useSelector((state) => state.users.visibleAdd)
+  const formRef = useRef(null)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    setValidated(false)
+  }, [user])
 
   const OnUsernameChange = (e) => {
     setUser((prev) => ({ ...prev, username: e.target.value }))
@@ -39,10 +45,17 @@ const AddUser = (props) => {
     dispatch(CloseAddUser())
   }
 
-  const saveHandler = () => {
-    addUser(currentUser)
-
-    onSave()
+  const saveHandler = (e) => {
+    const form = formRef.current
+    if (form.checkValidity() === false) {
+      e.preventDefault()
+      e.stopPropagation()
+    } else {
+      dispatch(addUser(currentUser)).then((res) => {
+        onSave()
+      })
+    }
+    setValidated(true)
   }
 
   return (
@@ -52,40 +65,57 @@ const AddUser = (props) => {
       </CModalHeader>
       <CModalBody>
         <CCol xs="auto">
-          <CFormLabel htmlFor="userName">{localization.get('adduser.input.username')}</CFormLabel>
-          <CFormInput
-            type="text"
-            id="userName"
-            aria-describedby="userNameInputHelp"
-            value={currentUser.username}
-            onChange={OnUsernameChange}
-          />
-        </CCol>
-        <CCol xs="auto">
-          <CFormLabel htmlFor="fullName">{localization.get('adduser.input.fullname')}</CFormLabel>
-          <CFormInput
-            type="text"
-            id="fullName"
-            aria-describedby="userNameInputHelp"
-            value={currentUser.fullName}
-            onChange={OnFullnameChange}
-          />
-        </CCol>
-        <CCol xs="auto">
-          <CFormLabel htmlFor="email" value={currentUser.email}>
-            {localization.get('adduser.input.email')}
-          </CFormLabel>
-          <CFormInput
-            type="email"
-            id="email"
-            placeholder="name@example.com"
-            aria-describedby="emailInputHelp"
-            onChange={OnEmailChange}
-          />
+          <CForm
+            ref={formRef}
+            className="row needs-validation"
+            onSubmit={saveHandler}
+            noValidate
+            validated={validated}
+          >
+            <div className="mb-3">
+              <CFormInput
+                type="text"
+                id="userName"
+                label={localization.get('adduser.input.username')}
+                aria-describedby="userNameInputHelp"
+                value={currentUser.username}
+                onChange={OnUsernameChange}
+                feedbackInvalid={localization.get('adduser.input.username.feedback')}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <CFormInput
+                type="text"
+                id="fullName"
+                label={localization.get('adduser.input.fullname')}
+                aria-describedby="fullnameInputHelp"
+                value={currentUser.fullName}
+                onChange={OnFullnameChange}
+                feedbackInvalid={localization.get('adduser.input.fullname.feedback')}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <CFormInput
+                type="email"
+                id="email"
+                label={localization.get('adduser.input.email')}
+                placeholder="name@example.com"
+                aria-describedby="emailInputHelp"
+                onChange={OnEmailChange}
+                feedbackInvalid={localization.get('login.input.email.feedback')}
+                required
+              />
+            </div>
+            <CButton type="submit" style={{ display: 'none' }}>
+              Enviar
+            </CButton>
+          </CForm>
         </CCol>
       </CModalBody>
       <CModalFooter>
-        <CButton color="secondary" onClick={() => closeHandler()}>
+        <CButton color="secondary" onClick={closeHandler}>
           {localization.get('adduser.button.close')}
         </CButton>
         <CButton color="info" onClick={saveHandler}>
