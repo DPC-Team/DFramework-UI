@@ -1,7 +1,9 @@
-import React, { Component, Suspense } from 'react'
+import React, { Component, Suspense, useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
 import PrivateRoute from './routes/PrivateRoute'
+import { useDispatch } from 'react-redux'
+import { LoadLocalization } from './services/Localization/LocalizationService'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -18,22 +20,26 @@ const Register = React.lazy(() => import('./views/pages/register/Register'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 
-class App extends Component {
-  render() {
-    return (
-      <HashRouter>
-        <Suspense fallback={loading}>
-          <Routes>
-            <Route exact path="/login" name="Login Page" element={<Login />} />
-            <Route exact path="/register" name="Register Page" element={<Register />} />
-            <Route exact path="/404" name="Page 404" element={<Page404 />} />
-            <Route exact path="/500" name="Page 500" element={<Page500 />} />
-            <Route path="*" name="Home" element={<PrivateRoute component={DefaultLayout} />} />
-          </Routes>
-        </Suspense>
-      </HashRouter>
-    )
-  }
+const App = () => {
+  var dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(LoadLocalization())
+  }, [dispatch])
+
+  return (
+    <HashRouter>
+      <Suspense fallback={loading}>
+        <Routes>
+          <Route exact path="/login" name="Login Page" element={<Login />} />
+          <Route exact path="/register" name="Register Page" element={<Register />} />
+          <Route exact path="/404" name="Page 404" element={<Page404 />} />
+          <Route exact path="/500" name="Page 500" element={<Page500 />} />
+          <Route path="*" name="Home" element={<PrivateRoute component={DefaultLayout} />} />
+        </Routes>
+      </Suspense>
+    </HashRouter>
+  )
 }
 
 export default App
