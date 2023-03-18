@@ -23,6 +23,7 @@ import { logo } from 'src/assets/brand/logo'
 const AppHeader = () => {
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebar.sidebarShow)
+  const localization = useSelector((state) => state.localization.localization)
 
   return (
     <CHeader position="sticky" className="mb-4">
@@ -36,16 +37,16 @@ const AppHeader = () => {
         <CHeaderNav className="d-none d-md-flex me-auto">
           <CNavItem>
             <CNavLink to="/dashboard" component={NavLink}>
-              Dashboard
+              {localization.get(`header.dashboard`)}
             </CNavLink>
           </CNavItem>
           <CNavItem>
             <CNavLink to="/users" component={NavLink}>
-              Users
+              {localization.get(`header.users`)}
             </CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">Settings</CNavLink>
+            <CNavLink href="#"> {localization.get(`header.settings`)}</CNavLink>
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav>

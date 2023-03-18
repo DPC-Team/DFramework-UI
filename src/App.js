@@ -1,4 +1,4 @@
-import React, { Component, Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './scss/style.scss'
 import PrivateRoute from './routes/PrivateRoute'

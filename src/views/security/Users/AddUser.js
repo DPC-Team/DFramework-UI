@@ -11,16 +11,14 @@ import {
   CModalBody,
   CModalFooter,
   CButton,
-  CForm,
   CCol,
   CFormLabel,
   CFormInput,
-  CFormText,
 } from '@coreui/react'
 
 const AddUser = (props) => {
   const { onSave } = props
-
+  const localization = useSelector((state) => state.localization.localization)
   const user = useSelector((state) => state.users.addingUser)
   const [currentUser, setUser] = useState(user)
   const visibleAdd = useSelector((state) => state.users.visibleAdd)
@@ -50,11 +48,11 @@ const AddUser = (props) => {
   return (
     <CModal alignment="center" visible={visibleAdd} onClose={() => closeHandler()}>
       <CModalHeader>
-        <CModalTitle>Add User</CModalTitle>
+        <CModalTitle>{localization.get('adduser.title')}</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CCol xs="auto">
-          <CFormLabel htmlFor="userName">Username</CFormLabel>
+          <CFormLabel htmlFor="userName">{localization.get('adduser.input.username')}</CFormLabel>
           <CFormInput
             type="text"
             id="userName"
@@ -64,7 +62,7 @@ const AddUser = (props) => {
           />
         </CCol>
         <CCol xs="auto">
-          <CFormLabel htmlFor="fullName">Fullname</CFormLabel>
+          <CFormLabel htmlFor="fullName">{localization.get('adduser.input.fullname')}</CFormLabel>
           <CFormInput
             type="text"
             id="fullName"
@@ -75,7 +73,7 @@ const AddUser = (props) => {
         </CCol>
         <CCol xs="auto">
           <CFormLabel htmlFor="email" value={currentUser.email}>
-            Email address
+            {localization.get('adduser.input.email')}
           </CFormLabel>
           <CFormInput
             type="email"
@@ -88,10 +86,10 @@ const AddUser = (props) => {
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" onClick={() => closeHandler()}>
-          Close
+          {localization.get('adduser.button.close')}
         </CButton>
         <CButton color="info" onClick={saveHandler}>
-          Save changes
+          {localization.get('adduser.button.save')}
         </CButton>
       </CModalFooter>
     </CModal>

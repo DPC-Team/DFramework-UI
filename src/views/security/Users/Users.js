@@ -21,6 +21,7 @@ import {
 
 const Users = () => {
   const users = useSelector((state) => state.users.users)
+  const localization = useSelector((state) => state.localization.localization)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -41,21 +42,27 @@ const Users = () => {
         <AddUser onSave={OnSaveUser} />
         <CCard className="mb-4">
           <CCardHeader>
-            <strong>Users</strong>
+            <strong>{localization.get('users.title')}</strong>
           </CCardHeader>
           <CCardBody>
             <p className="text-medium-emphasis small">
               <CButton color="info" onClick={OpenAddHandler}>
-                Add
+                {localization.get('users.add.button')}
               </CButton>
             </p>
             <CTable>
               <CTableHead>
                 <CTableRow>
                   <CTableHeaderCell scope="col">#</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Username</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Fullname</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Email</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    {localization.get('users.table.header.username')}
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    {localization.get('users.table.header.fullname')}
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    {localization.get('users.table.header.email')}
+                  </CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>

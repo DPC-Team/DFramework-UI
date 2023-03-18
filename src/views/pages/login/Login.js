@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import {
   CButton,
   CCard,
@@ -18,6 +19,7 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import { authenticate } from 'src/services/Authentication/AuthenticationServices'
 
 const Login = () => {
+  const localization = useSelector((state) => state.localization.localization)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -52,14 +54,14 @@ const Login = () => {
               <CCard className="p-4">
                 <CCardBody>
                   <CForm>
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
+                    <h1>{localization.get('login.title')}</h1>
+                    <p className="text-medium-emphasis">{localization.get('login.text')}</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
-                        placeholder="Username"
+                        placeholder={localization.get('login.input.username')}
                         autoComplete="username"
                         onChange={handlerUsernameChange}
                         onKeyPress={OnEnterEvent}
@@ -72,7 +74,7 @@ const Login = () => {
                       </CInputGroupText>
                       <CFormInput
                         type="password"
-                        placeholder="Password"
+                        placeholder={localization.get('login.input.password')}
                         autoComplete="current-password"
                         onChange={handlerPasswordChange}
                         onKeyPress={OnEnterEvent}
@@ -82,12 +84,12 @@ const Login = () => {
                     <CRow>
                       <CCol xs={6}>
                         <CButton color="primary" className="px-4" onClick={onLogin}>
-                          Login
+                          {localization.get('login.button')}
                         </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0">
-                          Forgot password?
+                          {localization.get('login.forgotpassword')}
                         </CButton>
                       </CCol>
                     </CRow>

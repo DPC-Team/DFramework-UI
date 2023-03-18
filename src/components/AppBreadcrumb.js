@@ -1,16 +1,17 @@
 import React from 'react'
 import { useLocation } from 'react-router-dom'
-
+import { useSelector } from 'react-redux'
 import routes from '../routes'
 
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 
 const AppBreadcrumb = () => {
   const currentLocation = useLocation().pathname
-
+  const localization = useSelector((state) => state.localization.localization)
   const getRouteName = (pathname, routes) => {
     const currentRoute = routes.find((route) => route.path === pathname)
-    return currentRoute ? currentRoute.name : false
+    console.log(currentRoute.name)
+    return currentRoute ? localization.get(`route.${currentRoute.name}`) : false
   }
 
   const getBreadcrumbs = (location) => {
@@ -26,6 +27,7 @@ const AppBreadcrumb = () => {
         })
       return currentPathname
     })
+    console.log(breadcrumbs)
     return breadcrumbs
   }
 
@@ -33,7 +35,7 @@ const AppBreadcrumb = () => {
 
   return (
     <CBreadcrumb className="m-0 ms-2">
-      <CBreadcrumbItem href="/">Home</CBreadcrumbItem>
+      <CBreadcrumbItem href="/">{localization.get(`route.home`)}</CBreadcrumbItem>
       {breadcrumbs.map((breadcrumb, index) => {
         return (
           <CBreadcrumbItem
