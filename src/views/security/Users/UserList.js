@@ -11,7 +11,7 @@ import {
 } from '@coreui/react'
 import Pagination from 'src/components/Pagination/Pagination'
 import { GetUsers } from 'src/services/Security/UserService'
-import { DeleteUser } from 'src/reducers/UserReducer'
+import { DeleteUser, OpenUpdateUser } from 'src/reducers/UserReducer'
 
 const UserList = (props) => {
   const users = useSelector((state) => state.users.users)
@@ -25,6 +25,11 @@ const UserList = (props) => {
 
   const deleteUser = (id) => {
     dispatch(DeleteUser(id))
+  }
+
+  const UpdateUserHandler = (user) => {
+    console.log(user)
+    dispatch(OpenUpdateUser(user))
   }
 
   return (
@@ -54,7 +59,9 @@ const UserList = (props) => {
                 <CTableDataCell>{item.fullname}</CTableDataCell>
                 <CTableDataCell>{item.email}</CTableDataCell>
                 <CTableDataCell className="col-2">
-                  <CButton color="link"> {localization.get('users.table.edit.action')}</CButton>
+                  <CButton color="link" onClick={() => UpdateUserHandler(item)}>
+                    {localization.get('users.table.edit.action')}
+                  </CButton>
                   <CButton color="dark" onClick={() => deleteUser(item.id)}>
                     {localization.get('users.table.delete.action')}
                   </CButton>

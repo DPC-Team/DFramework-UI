@@ -1,9 +1,15 @@
 import React, { useEffect } from 'react'
 import { GetUsers, DeleteUser } from 'src/services/Security/UserService'
 import { useSelector, useDispatch } from 'react-redux'
-import { OpenAddUser, CloseAddUser, DeleteUser as setDeleteUser } from 'src/reducers/UserReducer'
+import {
+  OpenAddUser,
+  CloseAddUser,
+  DeleteUser as setDeleteUser,
+  CloseUpdateUser,
+} from 'src/reducers/UserReducer'
 import AddUser from './AddUser'
 import UserList from './UserList'
+import UpdateUser from './UpdateUser'
 import { CCard, CCardBody, CCardHeader, CCol, CRow, CButton } from '@coreui/react'
 import Confirmation from 'src/components/Confirmation/Confirmation'
 
@@ -25,6 +31,11 @@ const Users = () => {
     dispatch(GetUsers())
   }
 
+  const OnSaveUpdateUser = () => {
+    dispatch(CloseUpdateUser())
+    dispatch(GetUsers())
+  }
+
   const OnConfirmDelete = () => {
     dispatch(DeleteUser(deleteUserId)).then(() => {
       dispatch(GetUsers())
@@ -39,6 +50,7 @@ const Users = () => {
     <CRow>
       <CCol xs={12}>
         <AddUser onSave={OnSaveUser} />
+        <UpdateUser onSave={OnSaveUpdateUser} />
         <Confirmation
           title={localization.get('users.delete.title')}
           text={localization.get('users.delete.text')}

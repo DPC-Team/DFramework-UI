@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { CloseAddUser } from 'src/reducers/UserReducer'
-import { AddUser as addUser } from 'src/services/Security/UserService'
+import { CloseUpdateUser } from 'src/reducers/UserReducer'
+import { UpdateUser as updateUser } from 'src/services/Security/UserService'
 import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 
@@ -16,23 +16,21 @@ import {
   CForm,
 } from '@coreui/react'
 
-const AddUser = (props) => {
+const UpdateUser = (props) => {
   const { onSave } = props
-  const user = useSelector((state) => state.users.addingUser)
+  const user = useSelector((state) => state.users.updatingUser)
   const [currentUser, setUser] = useState(user)
   const [validated, setValidated] = useState(false)
   const localization = useSelector((state) => state.localization.localization)
-  const visibleAdd = useSelector((state) => state.users.visibleAdd)
+  const visibleUpdate = useSelector((state) => state.users.visibleUpdate)
   const formRef = useRef(null)
   const dispatch = useDispatch()
 
   useEffect(() => {
     setValidated(false)
+    setUser(user)
   }, [user])
 
-  const OnUsernameChange = (e) => {
-    setUser((prev) => ({ ...prev, username: e.target.value }))
-  }
   const OnFullnameChange = (e) => {
     setUser((prev) => ({ ...prev, fullName: e.target.value }))
   }
@@ -42,7 +40,7 @@ const AddUser = (props) => {
 
   const closeHandler = () => {
     setUser({})
-    dispatch(CloseAddUser())
+    dispatch(CloseUpdateUser())
   }
 
   const saveHandler = (e) => {
@@ -51,17 +49,16 @@ const AddUser = (props) => {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      dispatch(addUser(currentUser)).then((res) => {
+      dispatch(updateUser(currentUser)).then((res) => {
         onSave()
       })
     }
     setValidated(true)
   }
-
   return (
-    <CModal alignment="center" visible={visibleAdd} onClose={() => closeHandler()}>
+    <CModal alignment="center" visible={visibleUpdate} onClose={() => closeHandler()}>
       <CModalHeader>
-        <CModalTitle>{localization.get('adduser.title')}</CModalTitle>
+        <CModalTitle>{localization.get('updateuser.title')}</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CCol xs="auto">
@@ -76,23 +73,22 @@ const AddUser = (props) => {
               <CFormInput
                 type="text"
                 id="userName"
-                label={localization.get('adduser.input.username')}
                 aria-describedby="userNameInputHelp"
                 value={currentUser.username}
-                onChange={OnUsernameChange}
-                feedbackInvalid={localization.get('adduser.input.username.feedback')}
-                required
+                readOnly
+                plainText
+                style={{ fontWeight: 'bold' }}
               />
             </div>
             <div className="mb-3">
               <CFormInput
                 type="text"
                 id="fullName"
-                label={localization.get('adduser.input.fullname')}
+                label={localization.get('updateuser.input.fullname')}
                 aria-describedby="fullnameInputHelp"
-                value={currentUser.fullName}
+                value={currentUser.fullname}
                 onChange={OnFullnameChange}
-                feedbackInvalid={localization.get('adduser.input.fullname.feedback')}
+                feedbackInvalid={localization.get('updateuser.input.fullname.feedback')}
                 required
               />
             </div>
@@ -100,12 +96,12 @@ const AddUser = (props) => {
               <CFormInput
                 type="email"
                 id="email"
-                label={localization.get('adduser.input.email')}
+                label={localization.get('updateuser.input.email')}
                 placeholder="name@example.com"
                 aria-describedby="emailInputHelp"
                 value={currentUser.email}
                 onChange={OnEmailChange}
-                feedbackInvalid={localization.get('adduser.input.email.feedback')}
+                feedbackInvalid={localization.get('updateuser.input.email.feedback')}
                 required
               />
             </div>
@@ -117,18 +113,18 @@ const AddUser = (props) => {
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" onClick={closeHandler}>
-          {localization.get('adduser.button.close')}
+          {localization.get('updateuser.button.close')}
         </CButton>
         <CButton color="info" onClick={saveHandler}>
-          {localization.get('adduser.button.save')}
+          {localization.get('updateuser.button.save')}
         </CButton>
       </CModalFooter>
     </CModal>
   )
 }
 
-AddUser.propTypes = {
+UpdateUser.propTypes = {
   onSave: PropTypes.func,
 }
 
-export default AddUser
+export default UpdateUser
