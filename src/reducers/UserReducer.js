@@ -1,11 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const initialUser = {
+  username: '',
+  fullname: '',
+  email: '',
+}
+
 export const UserSlice = createSlice({
   name: 'user',
   initialState: {
     users: {},
-    addingUser: {},
-    updatingUser: {},
+    addingUser: { ...initialUser },
+    updatingUser: { ...initialUser },
     deleteUserId: null,
     visibleAdd: false,
     visibleUpdate: false,
@@ -16,7 +22,7 @@ export const UserSlice = createSlice({
     },
     OpenAddUser: (state, action) => {
       state.visibleAdd = true
-      state.addingUser = {}
+      state.addingUser = { ...initialUser }
     },
     CloseAddUser: (state, action) => {
       state.visibleAdd = false
@@ -27,10 +33,10 @@ export const UserSlice = createSlice({
     },
     CloseUpdateUser: (state, action) => {
       state.visibleUpdate = false
-      state.updatingUser = {}
+      state.updatingUser = { ...initialUser }
     },
     AddUser: (state, action) => {
-      state.addingUser = {}
+      state.addingUser = { ...initialUser }
     },
     UpdateUser: (state, action) => {
       state.updatingUser = action.payload

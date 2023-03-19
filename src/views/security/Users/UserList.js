@@ -28,7 +28,6 @@ const UserList = (props) => {
   }
 
   const UpdateUserHandler = (user) => {
-    console.log(user)
     dispatch(OpenUpdateUser(user))
   }
 

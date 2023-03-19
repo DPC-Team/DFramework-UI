@@ -14,12 +14,14 @@ import {
   CCol,
   CFormInput,
   CForm,
+  CAlert,
 } from '@coreui/react'
 
 const UpdateUser = (props) => {
   const { onSave } = props
   const user = useSelector((state) => state.users.updatingUser)
   const [currentUser, setUser] = useState(user)
+  const [errorMessage, setErrorMessage] = useState(null)
   const [validated, setValidated] = useState(false)
   const localization = useSelector((state) => state.localization.localization)
   const visibleUpdate = useSelector((state) => state.users.visibleUpdate)
@@ -29,29 +31,34 @@ const UpdateUser = (props) => {
   useEffect(() => {
     setValidated(false)
     setUser(user)
+    setErrorMessage(null)
   }, [user])
 
   const OnFullnameChange = (e) => {
-    setUser((prev) => ({ ...prev, fullName: e.target.value }))
+    setUser((prev) => ({ ...prev, fullname: e.target.value }))
   }
   const OnEmailChange = (e) => {
     setUser((prev) => ({ ...prev, email: e.target.value }))
   }
-
   const closeHandler = () => {
-    setUser({})
     dispatch(CloseUpdateUser())
   }
 
   const saveHandler = (e) => {
+    setErrorMessage(null)
     const form = formRef.current
     if (form.checkValidity() === false) {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      dispatch(updateUser(currentUser)).then((res) => {
-        onSave()
-      })
+      dispatch(updateUser(currentUser))
+        .then((res) => {
+          onSave()
+        })
+        .catch((response) => {
+          var data = response.response.data
+          if (data && data.HasError) setErrorMessage(data.Message)
+        })
     }
     setValidated(true)
   }
@@ -70,6 +77,7 @@ const UpdateUser = (props) => {
             validated={validated}
           >
             <div className="mb-3">
+              {errorMessage && <CAlert color="danger">{errorMessage}</CAlert>}
               <CFormInput
                 type="text"
                 id="userName"

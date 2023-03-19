@@ -45,9 +45,6 @@ const AppHeader = () => {
               {localization.get(`header.users`)}
             </CNavLink>
           </CNavItem>
-          <CNavItem>
-            <CNavLink href="#"> {localization.get(`header.settings`)}</CNavLink>
-          </CNavItem>
         </CHeaderNav>
         <CHeaderNav>
           <CNavItem>

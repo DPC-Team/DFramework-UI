@@ -14,6 +14,7 @@ import {
   CCol,
   CFormInput,
   CForm,
+  CAlert,
 } from '@coreui/react'
 
 const AddUser = (props) => {
@@ -21,6 +22,7 @@ const AddUser = (props) => {
   const user = useSelector((state) => state.users.addingUser)
   const [currentUser, setUser] = useState(user)
   const [validated, setValidated] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(null)
   const localization = useSelector((state) => state.localization.localization)
   const visibleAdd = useSelector((state) => state.users.visibleAdd)
   const formRef = useRef(null)
@@ -28,6 +30,8 @@ const AddUser = (props) => {
 
   useEffect(() => {
     setValidated(false)
+    setErrorMessage(null)
+    setUser(user)
   }, [user])
 
   const OnUsernameChange = (e) => {
@@ -41,19 +45,24 @@ const AddUser = (props) => {
   }
 
   const closeHandler = () => {
-    setUser({})
     dispatch(CloseAddUser())
   }
 
   const saveHandler = (e) => {
+    setErrorMessage(null)
     const form = formRef.current
     if (form.checkValidity() === false) {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      dispatch(addUser(currentUser)).then((res) => {
-        onSave()
-      })
+      dispatch(addUser(currentUser))
+        .then((res) => {
+          onSave()
+        })
+        .catch((response) => {
+          var data = response.response.data
+          if (data && data.HasError) setErrorMessage(data.Message)
+        })
     }
     setValidated(true)
   }
@@ -73,6 +82,7 @@ const AddUser = (props) => {
             validated={validated}
           >
             <div className="mb-3">
+              {errorMessage && <CAlert color="danger">{errorMessage}</CAlert>}
               <CFormInput
                 type="text"
                 id="userName"

@@ -13,6 +13,7 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  CAlert,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
@@ -23,6 +24,7 @@ const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [validated, setValidated] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const navigate = useNavigate()
   const handlerUsernameChange = (e) => {
@@ -36,16 +38,21 @@ const Login = () => {
   const onLogin = async (e) => {
     if (e) {
       const form = e.currentTarget
+      setErrorMessage(null)
       if (form.checkValidity() === false) {
         e.preventDefault()
         e.stopPropagation()
       } else {
-        var user = await authenticate(username, password)
-        if (user && user.token) {
-          setUsername('')
-          setPassword('')
-          navigate('/')
-        }
+        authenticate(username, password)
+          .then(() => {
+            setUsername('')
+            setPassword('')
+            navigate('/')
+          })
+          .catch((response) => {
+            var data = response.response.data
+            if (data && data.HasError) setErrorMessage(data.Message)
+          })
       }
       setValidated(true)
     }
@@ -71,6 +78,7 @@ const Login = () => {
                   >
                     <h1>{localization.get('login.title')}</h1>
                     <p className="text-medium-emphasis">{localization.get('login.text')}</p>
+                    {errorMessage && <CAlert color="danger">{errorMessage}</CAlert>}
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
@@ -102,12 +110,12 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4" onClick={onLogin}>
+                        <CButton color="primary" className="px-4" type="submit">
                           {localization.get('login.button')}
                         </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0" type="submit">
+                        <CButton color="link" className="px-0">
                           {localization.get('login.forgotpassword')}
                         </CButton>
                       </CCol>
