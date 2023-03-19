@@ -10,7 +10,6 @@ const AppBreadcrumb = () => {
   const localization = useSelector((state) => state.localization.localization)
   const getRouteName = (pathname, routes) => {
     const currentRoute = routes.find((route) => route.path === pathname)
-    console.log(currentRoute.name)
     return currentRoute ? localization.get(`route.${currentRoute.name}`) : false
   }
 
@@ -27,7 +26,6 @@ const AppBreadcrumb = () => {
         })
       return currentPathname
     })
-    console.log(breadcrumbs)
     return breadcrumbs
   }
 

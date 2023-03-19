@@ -34,18 +34,21 @@ const Login = () => {
   }
 
   const onLogin = async (e) => {
-    const form = e.currentTarget
-    if (form.checkValidity() === false) {
-      e.preventDefault()
-      e.stopPropagation()
-      var user = await authenticate(username, password)
-      if (user && user.token) {
-        setUsername('')
-        setPassword('')
-        navigate('/')
+    if (e) {
+      const form = e.currentTarget
+      if (form.checkValidity() === false) {
+        e.preventDefault()
+        e.stopPropagation()
+      } else {
+        var user = await authenticate(username, password)
+        if (user && user.token) {
+          setUsername('')
+          setPassword('')
+          navigate('/')
+        }
       }
+      setValidated(true)
     }
-    setValidated(true)
   }
 
   const OnEnterEvent = async (e) => {

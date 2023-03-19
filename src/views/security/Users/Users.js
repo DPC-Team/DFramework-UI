@@ -1,27 +1,15 @@
 import React, { useEffect } from 'react'
-import { GetUsers } from 'src/services/Security/UserService'
+import { GetUsers, DeleteUser } from 'src/services/Security/UserService'
 import { useSelector, useDispatch } from 'react-redux'
-import { OpenAddUser } from 'src/reducers/UserReducer'
+import { OpenAddUser, CloseAddUser, DeleteUser as setDeleteUser } from 'src/reducers/UserReducer'
 import AddUser from './AddUser'
-
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-  CButton,
-} from '@coreui/react'
+import UserList from './UserList'
+import { CCard, CCardBody, CCardHeader, CCol, CRow, CButton } from '@coreui/react'
+import Confirmation from 'src/components/Confirmation/Confirmation'
 
 const Users = () => {
-  const users = useSelector((state) => state.users.users)
   const localization = useSelector((state) => state.localization.localization)
+  const deleteUserId = useSelector((state) => state.users.deleteUserId)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -33,13 +21,34 @@ const Users = () => {
   }
 
   const OnSaveUser = () => {
+    dispatch(CloseAddUser())
     dispatch(GetUsers())
+  }
+
+  const OnConfirmDelete = () => {
+    dispatch(DeleteUser(deleteUserId)).then(() => {
+      dispatch(GetUsers())
+    })
+  }
+
+  const OnCancelDelete = () => {
+    dispatch(setDeleteUser(null))
   }
 
   return (
     <CRow>
       <CCol xs={12}>
         <AddUser onSave={OnSaveUser} />
+        <Confirmation
+          title={localization.get('users.delete.title')}
+          text={localization.get('users.delete.text')}
+          confirmButtonText={localization.get('users.delete.confirm.button')}
+          closeButtonText={localization.get('users.delete.close.button')}
+          confirmButtonColor="danger"
+          onConfirm={OnConfirmDelete}
+          onCancel={OnCancelDelete}
+          open={deleteUserId != null}
+        />
         <CCard className="mb-4">
           <CCardHeader>
             <strong>{localization.get('users.title')}</strong>
@@ -50,34 +59,7 @@ const Users = () => {
                 {localization.get('users.add.button')}
               </CButton>
             </p>
-            <CTable>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">#</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">
-                    {localization.get('users.table.header.username')}
-                  </CTableHeaderCell>
-                  <CTableHeaderCell scope="col">
-                    {localization.get('users.table.header.fullname')}
-                  </CTableHeaderCell>
-                  <CTableHeaderCell scope="col">
-                    {localization.get('users.table.header.email')}
-                  </CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {users &&
-                  users.items &&
-                  users.items.map((item) => (
-                    <CTableRow key={item.id}>
-                      <CTableHeaderCell scope="row">{item.id}</CTableHeaderCell>
-                      <CTableDataCell>{item.username}</CTableDataCell>
-                      <CTableDataCell>{item.fullname}</CTableDataCell>
-                      <CTableDataCell>{item.email}</CTableDataCell>
-                    </CTableRow>
-                  ))}
-              </CTableBody>
-            </CTable>
+            <UserList />
           </CCardBody>
         </CCard>
       </CCol>

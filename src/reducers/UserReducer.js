@@ -5,6 +5,8 @@ export const UserSlice = createSlice({
   initialState: {
     users: {},
     addingUser: {},
+    updatingUser: {},
+    deleteUserId: null,
     visibleAdd: false,
   },
   reducers: {
@@ -21,9 +23,16 @@ export const UserSlice = createSlice({
     AddUser: (state, action) => {
       state.addingUser = {}
     },
+    UpdateUser: (state, action) => {
+      state.updatingUser = {}
+    },
+    DeleteUser: (state, action) => {
+      state.deleteUserId = action.payload
+    },
   },
 })
 
-export const { GetUsers, OpenAddUser, AddUser, CloseAddUser } = UserSlice.actions
+export const { GetUsers, OpenAddUser, AddUser, CloseAddUser, UpdateUser, DeleteUser } =
+  UserSlice.actions
 
 export default UserSlice.reducer
